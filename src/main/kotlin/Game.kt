@@ -49,7 +49,7 @@ class Game(
                 updateWorldPosition()
                 removeOffscreenCoins()
                 removeOffScreenObstacles()
-                checkCollision()
+                checkCoinCollision()
 
                 coinFrameCounter ++
                 if(coinFrameCounter >= 90){
@@ -149,7 +149,7 @@ class Game(
         _uiState.update { it.copy(activeObstacles = visibleObstacles) }
     }
 
-    fun checkCollision(){
+    fun checkCoinCollision(){
         val currentState = _uiState.value
         val currentCoins = currentState.activeCoins
         val collisionThreshold = 15f
