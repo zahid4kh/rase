@@ -143,7 +143,7 @@ class Game(
 
     fun setBackground(){
         if (gameLoopJob?.isActive == true){
-            _uiState.update { it.copy(background = Color.Transparent) }
+            _uiState.update { it.copy(background = Color.White) }
         }else{
             _uiState.update { it.copy(background = Color.LightGray) }
         }
