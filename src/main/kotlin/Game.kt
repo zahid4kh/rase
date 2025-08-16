@@ -132,7 +132,7 @@ class Game(
             screenY < _uiState.value.screenHeight + 50f
         }
         if (currentCoins.size != visibleCoins.size) {
-            println("Removed ${currentCoins.size - visibleCoins.size} coins")
+            //println("Removed ${currentCoins.size - visibleCoins.size} coins")
         }
         _uiState.update { it.copy(activeCoins = visibleCoins) }
     }
@@ -144,7 +144,7 @@ class Game(
             screenY < _uiState.value.screenHeight + 50f
         }
         if (currentObstacles.size != visibleObstacles.size) {
-            println("Removed ${currentObstacles.size - visibleObstacles.size} coins")
+            println("Removed ${currentObstacles.size - visibleObstacles.size} obstacles")
         }
         _uiState.update { it.copy(activeObstacles = visibleObstacles) }
     }
