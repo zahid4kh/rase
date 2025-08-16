@@ -7,6 +7,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition.PlatformDefault.x
 import androidx.compose.ui.window.WindowPosition.PlatformDefault.y
 import theme.AppTheme
+import java.awt.SystemColor.text
 
 
 @Composable
@@ -117,7 +119,6 @@ fun App(
                 }
 
                 for (coin in listOfCoins){
-                    //println("Coin drawn: yPos = ${coin.y + uiState.worldOffsetY}")
                     drawCoin(
                         x = coin.x,
                         y = coin.y + uiState.worldOffsetY,
@@ -131,6 +132,11 @@ fun App(
                     topLeft = Offset(animateX, animateY)
                 )
             }
+            Text(
+                text = uiState.score.toString(),
+                modifier = Modifier.align(Alignment.TopEnd).padding(10.dp),
+                style = MaterialTheme.typography.titleLarge
+            )
 
             AnimatedVisibility(
                 visible = uiState.showPlayButton,

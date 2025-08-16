@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.abs
 
 class Game(
     private val database: Database,
@@ -46,6 +47,7 @@ class Game(
             while(isActive){
                 updateWorldPosition()
                 removeOffscreenCoins()
+                checkCollision()
 
                 frameCounter ++
                 if(frameCounter >= 90){
@@ -112,6 +114,30 @@ class Game(
         _uiState.update { it.copy(activeCoins = visibleCoins) }
     }
 
+    fun checkCollision(){
+        val currentState = _uiState.value
+        val currentCoins = currentState.activeCoins
+        val collisionThreshold = 15f
+
+        val carCenter = Pair(
+            currentState.carX + CAR_WIDTH/2,
+            currentState.carY + CAR_HEIGHT/2
+        )
+
+        val collectedCoins = currentCoins.filter { coin ->
+            val coinScreenY = coin.y + currentState.worldOffsetY
+            abs(carCenter.first - coin.x) <= collisionThreshold &&
+            abs(carCenter.second - coinScreenY) <= collisionThreshold
+        }
+
+        _uiState.update { it.copy(score = collectedCoins.size + it.score) }
+
+        val visibleCoins = currentCoins.filter { coin->
+            !collectedCoins.contains(coin)
+        }
+        _uiState.update { it.copy(activeCoins = visibleCoins) }
+    }
+
     fun moveCarUp() {
         if (gameLoopJob?.isActive != true) return
 
@@ -170,7 +196,8 @@ class Game(
         val worldOffsetY: Float = 0f,
         val lineSpacing: Float = 10f,
         val lineLength: Float = 10f,
-        val activeCoins: List<Coin> = emptyList()
+        val activeCoins: List<Coin> = emptyList(),
+        val score: Int = 0
     )
 
     data class Coin(
