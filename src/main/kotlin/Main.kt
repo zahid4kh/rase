@@ -5,10 +5,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import theme.AppTheme
-import java.awt.Dimension
 import org.koin.core.context.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
-import rase.resources.*
 
 
 fun main() = application {
@@ -17,15 +15,15 @@ fun main() = application {
     }
 
     val viewModel = getKoin().get<MainViewModel>()
+    val windowState = rememberWindowState(size = DpSize(400.dp, 600.dp))
 
     Window(
         onCloseRequest = ::exitApplication,
-        state = rememberWindowState(size = DpSize(500.dp, 800.dp)),
+        state = windowState,
         alwaysOnTop = true,
         title = "Rase",
-        icon = null
+        resizable = false
     ) {
-        window.minimumSize = Dimension(500, 800)
 
         AppTheme {
             App(
