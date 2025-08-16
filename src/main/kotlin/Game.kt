@@ -1,3 +1,5 @@
+import androidx.compose.ui.window.WindowPosition.PlatformDefault.x
+import androidx.compose.ui.window.WindowPosition.PlatformDefault.y
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -37,14 +39,20 @@ class Game(
 
     fun startGameLoop(){
         gameLoopJob = scope.launch {
-            withContext(Dispatchers.Main){
-                _uiState.update {
-                    it.copy(showPlayButton = false, requestFocus = true)
-                }
+            _uiState.update {
+                it.copy(showPlayButton = false, requestFocus = true)
             }
-
+            var frameCounter = 0
             while(isActive){
                 updateWorldPosition()
+                removeOffscreenCoins()
+
+                frameCounter ++
+                if(frameCounter >= 90){
+                    spawnCoins()
+                    frameCounter = 0
+                }
+
                 delay(16)
             }
         }
@@ -68,15 +76,40 @@ class Game(
         )
     }
 
-    suspend fun updateWorldPosition(){
-        var currentPos = 0f
-        while(gameLoopJob?.isActive == true){
-            currentPos += 2
-            _uiState.update {
-                it.copy(worldOffsetY = currentPos)
-            }
-            delay(16)
+    fun updateWorldPosition(){
+        val currentPos = _uiState.value
+        _uiState.update {
+            it.copy(worldOffsetY = currentPos.worldOffsetY +2 )
         }
+    }
+
+    fun spawnCoins(){
+        val range = 50..370
+        val xPos = range.random()
+
+        val yPos = -200f - _uiState.value.worldOffsetY
+
+        val newCoin = Coin(x = xPos.toFloat(), y = yPos)
+        val currentCoins = _uiState.value.activeCoins.toMutableList()
+
+        currentCoins.add(newCoin)
+
+        _uiState.update {
+            it.copy(activeCoins = currentCoins)
+        }
+        println("List of coins: ${currentCoins.size}")
+    }
+
+    fun removeOffscreenCoins() {
+        val currentCoins = _uiState.value.activeCoins
+        val visibleCoins = currentCoins.filter { coin ->
+            val screenY = coin.y + _uiState.value.worldOffsetY
+            screenY < _uiState.value.screenHeight + 50f
+        }
+        if (currentCoins.size != visibleCoins.size) {
+            println("Removed ${currentCoins.size - visibleCoins.size} coins")
+        }
+        _uiState.update { it.copy(activeCoins = visibleCoins) }
     }
 
     fun moveCarUp() {
@@ -136,6 +169,12 @@ class Game(
         val requestFocus: Boolean = false,
         val worldOffsetY: Float = 0f,
         val lineSpacing: Float = 10f,
-        val lineLength: Float = 10f
+        val lineLength: Float = 10f,
+        val activeCoins: List<Coin> = emptyList()
+    )
+
+    data class Coin(
+        val x: Float = 0f,
+        val y: Float = 0f
     )
 }

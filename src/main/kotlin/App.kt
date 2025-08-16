@@ -25,6 +25,8 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.WindowPosition.PlatformDefault.x
+import androidx.compose.ui.window.WindowPosition.PlatformDefault.y
 import theme.AppTheme
 
 
@@ -35,6 +37,7 @@ fun App(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val focusRequester = remember { FocusRequester() }
+    val listOfCoins = uiState.activeCoins
 
     LaunchedEffect(uiState.requestFocus) {
         if(uiState.requestFocus){
@@ -65,11 +68,11 @@ fun App(
                     .focusRequester(focusRequester)
                     .focusable()
                     .onKeyEvent { keyEvent ->
-                        println("Key event detected: ${keyEvent.key}")
+                        //println("Key event detected: ${keyEvent.key}")
                         if (keyEvent.type == KeyEventType.KeyDown) {
                             when (keyEvent.key) {
                                 Key.W -> {
-                                    println("W pressed!")
+                                    //println("W pressed!")
                                     viewModel.moveCarUp()
                                     return@onKeyEvent true
                                 }
@@ -110,6 +113,15 @@ fun App(
                         pathEffect = PathEffect.dashPathEffect(
                             intervals = floatArrayOf(uiState.lineLength, uiState.lineSpacing)
                         )
+                    )
+                }
+
+                for (coin in listOfCoins){
+                    //println("Coin drawn: yPos = ${coin.y + uiState.worldOffsetY}")
+                    drawCoin(
+                        x = coin.x,
+                        y = coin.y + uiState.worldOffsetY,
+                        deg = 0f
                     )
                 }
 
