@@ -18,6 +18,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
@@ -135,4 +137,18 @@ fun App(
 
         }
     }
+}
+
+fun DrawScope.drawCoin(x: Float, y: Float, deg: Float){
+    rotate(
+        degrees = deg,
+        pivot = Offset(x, y)
+    ){
+        drawCircle(
+            color = Color.Yellow,
+            radius = 10f,
+            center = Offset(x, y)
+        )
+    }
+
 }
