@@ -189,7 +189,7 @@ fun DrawScope.drawCoin(x: Float, y: Float, deg: Float){
 fun DrawScope.drawObstacle(x: Float, y: Float){
     drawRect(
         color = Color.Red,
-        size = Size(Game.Obstacle().width, 2f),
+        size = Size(80f, 2f),
         topLeft = Offset(x, y)
     )
 }
