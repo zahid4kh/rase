@@ -44,6 +44,7 @@ class Game(
             }
 
             while(isActive){
+                updateWorldPosition()
                 delay(16)
             }
         }
@@ -58,16 +59,6 @@ class Game(
         }
     }
 
-    fun toggleDarkMode() {
-        val newDarkMode = !_uiState.value.darkMode
-        _uiState.value = _uiState.value.copy(darkMode = newDarkMode)
-
-        scope.launch {
-            val settings = database.getSettings()
-            database.saveSettings(settings.copy(darkMode = newDarkMode))
-        }
-    }
-
     fun initializeGame(screenWidth: Float, screenHeight: Float) {
         _uiState.value = _uiState.value.copy(
             carX = screenWidth / 2f - CAR_WIDTH / 2f,
@@ -77,7 +68,16 @@ class Game(
         )
     }
 
-
+    suspend fun updateWorldPosition(){
+        var currentPos = 0f
+        while(gameLoopJob?.isActive == true){
+            currentPos += 30
+            _uiState.update {
+                it.copy(worldOffsetY = currentPos)
+            }
+            delay(250)
+        }
+    }
 
     fun moveCarUp() {
         val currentState = _uiState.value
@@ -108,6 +108,16 @@ class Game(
     fun clearFocusRequest(){
         _uiState.update { it.copy(requestFocus = false) }
     }
+    fun toggleDarkMode() {
+        val newDarkMode = !_uiState.value.darkMode
+        _uiState.value = _uiState.value.copy(darkMode = newDarkMode)
+
+        scope.launch {
+            val settings = database.getSettings()
+            database.saveSettings(settings.copy(darkMode = newDarkMode))
+        }
+    }
+
     data class UiState(
         val darkMode: Boolean = false,
         val carX: Float = 0f,
@@ -115,6 +125,9 @@ class Game(
         val screenWidth: Float = 0f,
         val screenHeight: Float = 0f,
         val showPlayButton: Boolean = true,
-        val requestFocus: Boolean = false
+        val requestFocus: Boolean = false,
+        val worldOffsetY: Float = 0f,
+        val lineSpacing: Float = 10f,
+        val lineLength: Float = 10f
     )
 }

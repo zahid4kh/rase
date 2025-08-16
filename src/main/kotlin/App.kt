@@ -98,13 +98,14 @@ fun App(
                     viewModel.initializeGame(size.width, size.height)
                 }
 
+                val wrapOffset = uiState.worldOffsetY % 20f
                 for (i in size.width.toInt() downTo 5 step 80) {
                     drawLine(
                         color = Color.DarkGray,
-                        start = Offset(i.toFloat(), 0f),
-                        end = Offset(i.toFloat(), size.height),
+                        start = Offset(i.toFloat(), wrapOffset),
+                        end = Offset(i.toFloat(), size.height + wrapOffset),
                         pathEffect = PathEffect.dashPathEffect(
-                            intervals = floatArrayOf(10f, 10f)
+                            intervals = floatArrayOf(uiState.lineLength, uiState.lineSpacing)
                         )
                     )
                 }
