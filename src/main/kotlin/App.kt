@@ -1,6 +1,7 @@
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleOut
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
@@ -49,6 +50,7 @@ fun App(
         targetValue = uiState.carX,
         animationSpec = spring()
     )
+    val wrapOffset = uiState.worldOffsetY % 20f
 
     AppTheme(darkTheme = uiState.darkMode) {
         Box(
@@ -98,7 +100,6 @@ fun App(
                     viewModel.initializeGame(size.width, size.height)
                 }
 
-                val wrapOffset = uiState.worldOffsetY % 20f
                 for (i in size.width.toInt() downTo 5 step 80) {
                     drawLine(
                         color = Color.DarkGray,

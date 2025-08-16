@@ -71,11 +71,11 @@ class Game(
     suspend fun updateWorldPosition(){
         var currentPos = 0f
         while(gameLoopJob?.isActive == true){
-            currentPos += 30
+            currentPos += 2
             _uiState.update {
                 it.copy(worldOffsetY = currentPos)
             }
-            delay(250)
+            delay(16)
         }
     }
 
