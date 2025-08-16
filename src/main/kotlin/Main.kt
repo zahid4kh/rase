@@ -14,7 +14,7 @@ fun main() = application {
         modules(appModule)
     }
 
-    val viewModel = getKoin().get<MainViewModel>()
+    val viewModel = getKoin().get<Game>()
     val windowState = rememberWindowState(size = DpSize(400.dp, 600.dp))
 
     Window(

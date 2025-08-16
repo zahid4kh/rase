@@ -1,11 +1,15 @@
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.scaleOut
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.focusable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -14,20 +18,27 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.input.key.*
-import sun.swing.SwingUtilities2.drawRect
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import theme.AppTheme
 
 
 @Composable
 @Preview
 fun App(
-    viewModel: MainViewModel
+    viewModel: Game
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+    LaunchedEffect(uiState.requestFocus) {
+        if(uiState.requestFocus){
+            focusRequester.requestFocus()
+            viewModel.clearFocusRequest()
+        }
+
     }
 
     val animateY by animateFloatAsState(
@@ -50,9 +61,11 @@ fun App(
                     .focusRequester(focusRequester)
                     .focusable()
                     .onKeyEvent { keyEvent ->
+                        println("Key event detected: ${keyEvent.key}")
                         if (keyEvent.type == KeyEventType.KeyDown) {
                             when (keyEvent.key) {
                                 Key.W -> {
+                                    println("W pressed!")
                                     viewModel.moveCarUp()
                                     return@onKeyEvent true
                                 }
@@ -69,6 +82,11 @@ fun App(
 
                                 Key.D -> {
                                     viewModel.moveCarRight()
+                                    return@onKeyEvent true
+                                }
+
+                                Key.Escape -> {
+                                    viewModel.stopGameLoop()
                                     return@onKeyEvent true
                                 }
                             }
@@ -93,10 +111,26 @@ fun App(
 
                 drawRect(
                     color = Color.Black,
-                    size = Size(MainViewModel.CAR_WIDTH, MainViewModel.CAR_HEIGHT),
+                    size = Size(Game.CAR_WIDTH, Game.CAR_HEIGHT),
                     topLeft = Offset(animateX, animateY)
                 )
             }
+
+            AnimatedVisibility(
+                visible = uiState.showPlayButton,
+                exit = scaleOut(targetScale = 0f),
+                modifier = Modifier.align(Alignment.Center)
+            ){
+                Button(
+                    onClick = {viewModel.startGameLoop()},
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .pointerHoverIcon(PointerIcon.Hand)
+                ){
+                    Text("PLAY", fontWeight = FontWeight.Bold)
+                }
+            }
+
         }
     }
 }
