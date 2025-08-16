@@ -80,12 +80,16 @@ class Game(
     }
 
     fun moveCarUp() {
+        if (gameLoopJob?.isActive != true) return
+
         val currentState = _uiState.value
         val newY = (currentState.carY - MOVE_STEP).coerceAtLeast(0f)
         _uiState.value = currentState.copy(carY = newY)
     }
 
     fun moveCarDown() {
+        if (gameLoopJob?.isActive != true) return
+
         val currentState = _uiState.value
         val maxY = currentState.screenHeight - CAR_HEIGHT*2.5f
         val newY = (currentState.carY + MOVE_STEP).coerceAtMost(maxY)
@@ -93,12 +97,16 @@ class Game(
     }
 
     fun moveCarLeft() {
+        if (gameLoopJob?.isActive != true) return
+
         val currentState = _uiState.value
         val newX = (currentState.carX - MOVE_STEP).coerceAtLeast(0f)
         _uiState.value = currentState.copy(carX = newX)
     }
 
     fun moveCarRight() {
+        if (gameLoopJob?.isActive != true) return
+
         val currentState = _uiState.value
         val maxX = currentState.screenWidth - CAR_WIDTH
         val newX = (currentState.carX + MOVE_STEP).coerceAtMost(if (maxX > 0) maxX else currentState.carX)
