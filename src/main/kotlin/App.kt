@@ -107,6 +107,10 @@ fun App(
                     viewModel.initializeGame(size.width, size.height)
                 }
 
+                drawRect(
+                    color = uiState.background
+                )
+
                 for (i in size.width.toInt() downTo 5 step 80) {
                     drawLine(
                         color = Color.DarkGray,

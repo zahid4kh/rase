@@ -1,3 +1,4 @@
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.WindowPosition.PlatformDefault.x
 import androidx.compose.ui.window.WindowPosition.PlatformDefault.y
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,7 @@ class Game(
 
     fun startGameLoop(){
         gameLoopJob = scope.launch {
+            setBackground()
             _uiState.update {
                 it.copy(showPlayButton = false, requestFocus = true)
             }
@@ -67,6 +69,7 @@ class Game(
         _uiState.update {
             it.copy(showPlayButton = true)
         }
+        setBackground()
     }
 
     fun initializeGame(screenWidth: Float, screenHeight: Float) {
@@ -138,6 +141,14 @@ class Game(
         _uiState.update { it.copy(activeCoins = visibleCoins) }
     }
 
+    fun setBackground(){
+        if (gameLoopJob?.isActive == true){
+            _uiState.update { it.copy(background = Color.Transparent) }
+        }else{
+            _uiState.update { it.copy(background = Color.LightGray) }
+        }
+    }
+
     fun moveCarUp() {
         if (gameLoopJob?.isActive != true) return
 
@@ -197,7 +208,8 @@ class Game(
         val lineSpacing: Float = 10f,
         val lineLength: Float = 10f,
         val activeCoins: List<Coin> = emptyList(),
-        val score: Int = 0
+        val score: Int = 0,
+        val background: Color = Color.LightGray
     )
 
     data class Coin(
