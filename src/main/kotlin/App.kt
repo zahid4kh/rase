@@ -43,6 +43,7 @@ fun App(
     val uiState by viewModel.uiState.collectAsState()
     val focusRequester = remember { FocusRequester() }
     val listOfCoins = uiState.activeCoins
+    val listOfObstacles = uiState.activeObstacles
 
     LaunchedEffect(uiState.requestFocus) {
         if(uiState.requestFocus){
@@ -133,6 +134,13 @@ fun App(
                     )
                 }
 
+                for (obstacle in listOfObstacles){
+                    drawObstacle(
+                        x = obstacle.x,
+                        y = obstacle.y + uiState.worldOffsetY
+                    )
+                }
+
                 drawRect(
                     color = Color.Black,
                     size = Size(Game.CAR_WIDTH, Game.CAR_HEIGHT),
@@ -176,5 +184,12 @@ fun DrawScope.drawCoin(x: Float, y: Float, deg: Float){
             center = Offset(x, y)
         )
     }
+}
 
+fun DrawScope.drawObstacle(x: Float, y: Float){
+    drawRect(
+        color = Color.Red,
+        size = Size(Game.Obstacle().width, 2f),
+        topLeft = Offset(x, y)
+    )
 }

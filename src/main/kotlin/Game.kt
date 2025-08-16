@@ -1,6 +1,4 @@
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.window.WindowPosition.PlatformDefault.x
-import androidx.compose.ui.window.WindowPosition.PlatformDefault.y
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,16 +43,24 @@ class Game(
             _uiState.update {
                 it.copy(showPlayButton = false, requestFocus = true)
             }
-            var frameCounter = 0
+            var coinFrameCounter = 0
+            var obstacleFrameCounter = 0
             while(isActive){
                 updateWorldPosition()
                 removeOffscreenCoins()
+                removeOffScreenObstacles()
                 checkCollision()
 
-                frameCounter ++
-                if(frameCounter >= 90){
+                coinFrameCounter ++
+                if(coinFrameCounter >= 90){
                     spawnCoins()
-                    frameCounter = 0
+                    coinFrameCounter = 0
+                }
+
+                obstacleFrameCounter ++
+                if(obstacleFrameCounter >= 180){
+                    spawnObstacles()
+                    obstacleFrameCounter = 0
                 }
 
                 delay(16)
@@ -102,7 +108,21 @@ class Game(
         _uiState.update {
             it.copy(activeCoins = currentCoins)
         }
-        //println("List of coins: ${currentCoins.size}")
+    }
+
+    fun spawnObstacles(){
+        val currentState = _uiState.value
+        val obstaclePositions = (currentState.screenWidth.toInt() downTo 5 step 80).toList()
+        val xPos = obstaclePositions.random().toFloat()
+        val yPos = -200f - currentState.worldOffsetY
+
+        val newObstacle = Obstacle(x = xPos, y = yPos)
+        val currentObstacles = currentState.activeObstacles.toMutableList()
+
+        currentObstacles.add(newObstacle)
+        _uiState.update {
+            it.copy(activeObstacles = currentObstacles)
+        }
     }
 
     fun removeOffscreenCoins() {
@@ -115,6 +135,18 @@ class Game(
             println("Removed ${currentCoins.size - visibleCoins.size} coins")
         }
         _uiState.update { it.copy(activeCoins = visibleCoins) }
+    }
+
+    fun removeOffScreenObstacles(){
+        val currentObstacles = _uiState.value.activeObstacles
+        val visibleObstacles = currentObstacles.filter { obstacle ->
+            val screenY = obstacle.y + _uiState.value.worldOffsetY
+            screenY < _uiState.value.screenHeight + 50f
+        }
+        if (currentObstacles.size != visibleObstacles.size) {
+            println("Removed ${currentObstacles.size - visibleObstacles.size} coins")
+        }
+        _uiState.update { it.copy(activeObstacles = visibleObstacles) }
     }
 
     fun checkCollision(){
@@ -208,6 +240,7 @@ class Game(
         val lineSpacing: Float = 10f,
         val lineLength: Float = 10f,
         val activeCoins: List<Coin> = emptyList(),
+        val activeObstacles: List<Obstacle> = emptyList(),
         val score: Int = 0,
         val background: Color = Color.LightGray
     )
@@ -215,5 +248,11 @@ class Game(
     data class Coin(
         val x: Float = 0f,
         val y: Float = 0f
+    )
+
+    data class Obstacle(
+        val x: Float = 0f,
+        val y: Float = -10f,
+        val width: Float = 80f
     )
 }
