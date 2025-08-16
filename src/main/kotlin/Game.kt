@@ -102,7 +102,7 @@ class Game(
         _uiState.update {
             it.copy(activeCoins = currentCoins)
         }
-        println("List of coins: ${currentCoins.size}")
+        //println("List of coins: ${currentCoins.size}")
     }
 
     fun removeOffscreenCoins() {
