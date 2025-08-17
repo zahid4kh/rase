@@ -9,7 +9,7 @@ A simple endless runner game built with Kotlin and Compose for Desktop. Navigate
 - **Movement**: Use WASD keys to control your car
 - **Objective**: Collect yellow coins to increase your score
 - **Obstacles**: Avoid red barriers to prevent game over
-- **Pause**: Press Escape to pause and access settings
+- **Pause**: Press `Escape` to pause and access settings
 
 ## Features
 
@@ -18,6 +18,17 @@ A simple endless runner game built with Kotlin and Compose for Desktop. Navigate
 - Pause and resume functionality
 - Score tracking
 - Cross-platform compatibility
+
+## Screenshots
+
+![Gameplay](media/gameplay.png)
+*Main gameplay showing car, coins, and obstacles*
+
+![Menu Options](media/menuoptions.png)
+*Pause menu with adjustable game settings*
+
+### Gameplay Video
+[Watch gameplay](https://github.com/user-attachments/assets/f6427365-9f2d-447a-a094-c81d51ab10b7)
 
 ## Installation
 
