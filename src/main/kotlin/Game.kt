@@ -50,6 +50,7 @@ class Game(
                 removeOffscreenCoins()
                 removeOffScreenObstacles()
                 checkCoinCollision()
+                checkObstacleCollision()
 
                 coinFrameCounter ++
                 if(coinFrameCounter >= 90){
@@ -72,8 +73,14 @@ class Game(
         gameLoopJob?.cancel()
         gameLoopJob = null
         println("Game loop cancelled")
-        _uiState.update {
-            it.copy(showPlayButton = true)
+        _uiState.update { currentState ->
+            currentState.copy(
+                showPlayButton = true,
+                score = 0,
+                activeCoins = emptyList(),
+                activeObstacles = emptyList(),
+                worldOffsetY = 0f
+            )
         }
         setBackground()
     }
@@ -173,6 +180,33 @@ class Game(
         _uiState.update { it.copy(activeCoins = visibleCoins) }
     }
 
+    fun checkObstacleCollision(){
+        val currentState = _uiState.value
+        val currentObstacles = currentState.activeObstacles
+
+        val carLeft = currentState.carX
+        val carRight = currentState.carX + CAR_WIDTH
+        val carTop = currentState.carY
+        val carBottom = currentState.carY + CAR_HEIGHT
+
+        for (obstacle in currentObstacles) {
+            val obstacleScreenY = obstacle.y + currentState.worldOffsetY
+
+            val obstacleLeft = obstacle.x
+            val obstacleRight = obstacle.x + 80f
+            val obstacleTop = obstacleScreenY
+            val obstacleBottom = obstacleScreenY + 2f
+
+            val xOverlap = carLeft < obstacleRight && carRight > obstacleLeft
+            val yOverlap = carTop < obstacleBottom && carBottom > obstacleTop
+
+            if (xOverlap && yOverlap) {
+                stopGameLoop()
+                return
+            }
+        }
+    }
+
     fun setBackground(){
         if (gameLoopJob?.isActive == true){
             _uiState.update { it.copy(background = Color.White) }
@@ -252,7 +286,6 @@ class Game(
 
     data class Obstacle(
         val x: Float = 0f,
-        val y: Float = -10f,
-        val width: Float = 80f
+        val y: Float = -10f
     )
 }
