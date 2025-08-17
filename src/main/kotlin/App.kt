@@ -9,6 +9,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -142,7 +143,10 @@ fun App(
 
                 drawRect(
                     color = Color.Black,
-                    size = Size(Game.CAR_WIDTH, Game.CAR_HEIGHT),
+                    size = Size(
+                        Game.CAR_WIDTH * uiState.carSizeFactor,
+                        Game.CAR_HEIGHT * uiState.carSizeFactor
+                    ),
                     topLeft = Offset(animateX, animateY)
                 )
             }
@@ -178,20 +182,91 @@ fun App(
                     visible = uiState.isPaused,
                     enter = slideInVertically(
                         animationSpec = tween(delayMillis = 400),
-                        initialOffsetY = {it-100}
+                        initialOffsetY = {it-800}
                     )
                 ){
-                    Text(
-                        text = "Game is paused :)",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Thin
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ){
+                        Text(
+                            text = "Game is paused :)",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Thin
+                        )
+
+                        Menu(
+                            uiState = uiState,
+                            game = viewModel
+                        )
+                    }
+
                 }
-
             }
-
-
         }
+    }
+}
+
+@Composable
+fun Menu(
+    uiState: Game.UiState,
+    game: Game
+){
+    OutlinedCard(
+        modifier = Modifier
+            .fillMaxWidth(0.8f),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+        ),
+        border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.onSurface)
+    ){
+        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+            MenuItem(
+                itemTitle = "Game Speed:",
+                onValueChange = {newValue -> game.setNewGameSpeed(newValue) },
+                value = uiState.gameSpeedFactor,
+                valueRange = 1f..5f
+            )
+            MenuItem(
+                itemTitle = "Car Size:",
+                onValueChange = { newValue -> game.setNewCarSize(newValue) },
+                value = uiState.carSizeFactor,
+                valueRange = 1f..5f
+            )
+            MenuItem(
+                itemTitle = "Car Speed:",
+                onValueChange = { newValue -> game.setNewCarSpeed(newValue) },
+                value = uiState.carSpeedFactor,
+                valueRange = 1f..3f
+            )
+        }
+    }
+}
+
+@Composable
+fun MenuItem(
+    itemTitle: String,
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    steps: Int = 0,
+    onValueChange: (Float) -> Unit
+){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        modifier = Modifier.padding(7.dp)
+    ){
+        Text(itemTitle, style = MaterialTheme.typography.labelMedium)
+
+        Slider(
+            value = value,
+            onValueChange = {newValue -> onValueChange(newValue)},
+            valueRange = valueRange,
+            steps = steps,
+            modifier = Modifier.weight(1f).pointerHoverIcon(PointerIcon.Hand)
+        )
     }
 }
 

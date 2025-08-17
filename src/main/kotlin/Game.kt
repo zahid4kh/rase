@@ -109,7 +109,7 @@ class Game(
     fun updateWorldPosition(){
         val currentPos = _uiState.value
         _uiState.update {
-            it.copy(worldOffsetY = currentPos.worldOffsetY +2 )
+            it.copy(worldOffsetY = currentPos.worldOffsetY + 2 * currentPos.gameSpeedFactor)
         }
     }
 
@@ -197,9 +197,9 @@ class Game(
         val currentObstacles = currentState.activeObstacles
 
         val carLeft = currentState.carX
-        val carRight = currentState.carX + CAR_WIDTH
+        val carRight = currentState.carX + CAR_WIDTH * currentState.carSizeFactor
         val carTop = currentState.carY
-        val carBottom = currentState.carY + CAR_HEIGHT
+        val carBottom = currentState.carY + CAR_HEIGHT * currentState.carSizeFactor
 
         for (obstacle in currentObstacles) {
             val obstacleScreenY = obstacle.y + currentState.worldOffsetY
@@ -231,7 +231,7 @@ class Game(
         if (gameLoopJob?.isActive != true) return
 
         val currentState = _uiState.value
-        val newY = (currentState.carY - MOVE_STEP).coerceAtLeast(0f)
+        val newY = (currentState.carY - MOVE_STEP * currentState.carSpeedFactor).coerceAtLeast(0f)
         _uiState.value = currentState.copy(carY = newY)
     }
 
@@ -240,7 +240,7 @@ class Game(
 
         val currentState = _uiState.value
         val maxY = currentState.screenHeight - CAR_HEIGHT*2.5f
-        val newY = (currentState.carY + MOVE_STEP).coerceAtMost(maxY)
+        val newY = (currentState.carY + MOVE_STEP * currentState.carSpeedFactor).coerceAtMost(maxY)
         _uiState.value = currentState.copy(carY = newY)
     }
 
@@ -248,7 +248,7 @@ class Game(
         if (gameLoopJob?.isActive != true) return
 
         val currentState = _uiState.value
-        val newX = (currentState.carX - MOVE_STEP).coerceAtLeast(0f)
+        val newX = (currentState.carX - MOVE_STEP * currentState.carSpeedFactor).coerceAtLeast(0f)
         _uiState.value = currentState.copy(carX = newX)
     }
 
@@ -257,8 +257,26 @@ class Game(
 
         val currentState = _uiState.value
         val maxX = currentState.screenWidth - CAR_WIDTH
-        val newX = (currentState.carX + MOVE_STEP).coerceAtMost(if (maxX > 0) maxX else currentState.carX)
+        val newX = (currentState.carX + MOVE_STEP * currentState.carSpeedFactor).coerceAtMost(if (maxX > 0) maxX else currentState.carX)
         _uiState.value = currentState.copy(carX = newX)
+    }
+
+    fun setNewCarSpeed(newSpeed: Float){
+        _uiState.update {
+            it.copy(carSpeedFactor = newSpeed)
+        }
+    }
+
+    fun setNewCarSize(sizeFactor: Float){
+        _uiState.update {
+            it.copy(carSizeFactor = sizeFactor)
+        }
+    }
+
+    fun setNewGameSpeed(gameSpeedFactor: Float){
+        _uiState.update {
+            it.copy(gameSpeedFactor = gameSpeedFactor)
+        }
     }
 
     fun clearFocusRequest(){
@@ -289,7 +307,10 @@ class Game(
         val activeObstacles: List<Obstacle> = emptyList(),
         val score: Int = 0,
         val background: Color = Color.LightGray,
-        val isPaused: Boolean = false
+        val isPaused: Boolean = false,
+        val carSizeFactor: Float = 1f,
+        val carSpeedFactor: Float = 1f,
+        val gameSpeedFactor: Float = 1f
     )
 
     data class Coin(
