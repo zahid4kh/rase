@@ -69,17 +69,29 @@ class Game(
         }
     }
 
-    fun stopGameLoop(){
+    fun pauseGame(){
         gameLoopJob?.cancel()
         gameLoopJob = null
-        println("Game loop cancelled")
+        println("Game paused")
         _uiState.update { currentState ->
+            currentState.copy(showPlayButton = true)
+        }
+        setBackground()
+    }
+
+    fun resetGame(){
+        gameLoopJob?.cancel()
+        gameLoopJob = null
+        _uiState.update {
+            currentState ->
             currentState.copy(
-                showPlayButton = true,
                 score = 0,
+                showPlayButton = true,
                 activeCoins = emptyList(),
                 activeObstacles = emptyList(),
-                worldOffsetY = 0f
+                worldOffsetY = 0f,
+                carX = currentState.screenWidth/2f - CAR_WIDTH/2,
+                carY = currentState.screenHeight - 150f
             )
         }
         setBackground()
@@ -201,7 +213,7 @@ class Game(
             val yOverlap = carTop < obstacleBottom && carBottom > obstacleTop
 
             if (xOverlap && yOverlap) {
-                stopGameLoop()
+                resetGame()
                 return
             }
         }

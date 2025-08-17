@@ -1,8 +1,6 @@
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -21,7 +19,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.input.key.*
@@ -29,10 +26,7 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.WindowPosition.PlatformDefault.x
-import androidx.compose.ui.window.WindowPosition.PlatformDefault.y
 import theme.AppTheme
-import java.awt.SystemColor.text
 
 
 @Composable
@@ -99,7 +93,7 @@ fun App(
                                 }
 
                                 Key.Escape -> {
-                                    viewModel.stopGameLoop()
+                                    viewModel.pauseGame()
                                     return@onKeyEvent true
                                 }
                             }
