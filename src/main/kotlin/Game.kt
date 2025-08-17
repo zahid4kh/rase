@@ -72,7 +72,7 @@ class Game(
     fun pauseGame(){
         gameLoopJob?.cancel()
         gameLoopJob = null
-        println("Game paused")
+        //println("Game paused")
         _uiState.update { currentState ->
             currentState.copy(showPlayButton = true, isPaused = true)
         }
@@ -163,7 +163,7 @@ class Game(
             screenY < _uiState.value.screenHeight + 50f
         }
         if (currentObstacles.size != visibleObstacles.size) {
-            println("Removed ${currentObstacles.size - visibleObstacles.size} obstacles")
+            //println("Removed ${currentObstacles.size - visibleObstacles.size} obstacles")
         }
         _uiState.update { it.copy(activeObstacles = visibleObstacles) }
     }
