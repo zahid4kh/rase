@@ -4,3 +4,4 @@
 /.gradle
 /build
 /deb-temp
+create-readme.sh
