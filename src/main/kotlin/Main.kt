@@ -4,9 +4,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import org.jetbrains.compose.resources.painterResource
 import theme.AppTheme
 import org.koin.core.context.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
+import rase.resources.Res
+import rase.resources.rase
 
 
 fun main() = application {
@@ -22,7 +25,8 @@ fun main() = application {
         state = windowState,
         alwaysOnTop = true,
         title = "Rase",
-        resizable = false
+        resizable = false,
+        icon = painterResource(Res.drawable.rase)
     ) {
 
         AppTheme {

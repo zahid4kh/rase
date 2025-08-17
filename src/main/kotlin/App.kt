@@ -63,7 +63,7 @@ fun App(
     )
     val wrapOffset = uiState.worldOffsetY % 20f
 
-    AppTheme(darkTheme = uiState.darkMode) {
+    AppTheme {
         Box(
             modifier = Modifier
                 .fillMaxSize()

@@ -12,9 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
-class Game(
-    private val database: Database,
-) {
+class Game() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
@@ -25,16 +23,6 @@ class Game(
         const val CAR_WIDTH = 30f
         const val CAR_HEIGHT = 50f
         const val MOVE_STEP = 10f
-    }
-
-    init {
-        scope.launch {
-            val settings = database.getSettings()
-            withContext(Dispatchers.Main){
-
-            }
-            _uiState.update { it.copy(darkMode = settings.darkMode) }
-        }
     }
 
     fun startGameLoop(){
@@ -282,18 +270,8 @@ class Game(
     fun clearFocusRequest(){
         _uiState.update { it.copy(requestFocus = false) }
     }
-    fun toggleDarkMode() {
-        val newDarkMode = !_uiState.value.darkMode
-        _uiState.value = _uiState.value.copy(darkMode = newDarkMode)
-
-        scope.launch {
-            val settings = database.getSettings()
-            database.saveSettings(settings.copy(darkMode = newDarkMode))
-        }
-    }
 
     data class UiState(
-        val darkMode: Boolean = false,
         val carX: Float = 0f,
         val carY: Float = 0f,
         val screenWidth: Float = 0f,
