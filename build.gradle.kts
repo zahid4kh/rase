@@ -9,8 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.plugin.compose)
-    alias(libs.plugins.kotlin.plugin.serialization)
-    alias(libs.plugins.hotReload)
+    alias(libs.plugins.hotReload) apply false
 }
 
 val appPackageVersion = "1.0.0"
@@ -23,20 +22,28 @@ repositories {
     google()
 }
 
+val isReleaseBuild = gradle.startParameter.taskNames.any {
+    it.contains("release", ignoreCase = true) || it.contains("buildUberDeb")
+}
+if (!isReleaseBuild) {
+    apply(plugin = "org.jetbrains.compose.hot-reload")
+}
+
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
     implementation(compose.components.resources)
 
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.swing)
 
-    // Koin for dependency injection
     implementation(libs.koin.core)
 
-    // SLF4J Logging (for hot reload)
-    implementation(libs.bundles.slf4j)
+    if (!isReleaseBuild) {
+        implementation(libs.bundles.slf4j)
+    } else {
+        implementation(libs.slf4j.nop)
+    }
 }
 
 
