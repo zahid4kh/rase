@@ -207,7 +207,7 @@ class Game(
             val obstacleLeft = obstacle.x
             val obstacleRight = obstacle.x + 80f
             val obstacleTop = obstacleScreenY
-            val obstacleBottom = obstacleScreenY + 2f
+            val obstacleBottom = obstacleScreenY + 17f
 
             val xOverlap = carLeft < obstacleRight && carRight > obstacleLeft
             val yOverlap = carTop < obstacleBottom && carBottom > obstacleTop
