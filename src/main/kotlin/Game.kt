@@ -171,11 +171,11 @@ class Game(
     fun checkCoinCollision(){
         val currentState = _uiState.value
         val currentCoins = currentState.activeCoins
-        val collisionThreshold = 15f
+        val collisionThreshold = 15f * currentState.carSizeFactor
 
         val carCenter = Pair(
-            currentState.carX + CAR_WIDTH/2,
-            currentState.carY + CAR_HEIGHT/2
+            currentState.carX + (CAR_WIDTH/2) * currentState.carSizeFactor,
+            currentState.carY + CAR_HEIGHT/2 * currentState.carSizeFactor
         )
 
         val collectedCoins = currentCoins.filter { coin ->
