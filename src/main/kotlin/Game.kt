@@ -41,7 +41,7 @@ class Game(
         gameLoopJob = scope.launch {
             setBackground()
             _uiState.update {
-                it.copy(showPlayButton = false, requestFocus = true)
+                it.copy(showPlayButton = false, requestFocus = true, isPaused = false)
             }
             var coinFrameCounter = 0
             var obstacleFrameCounter = 0
@@ -74,7 +74,7 @@ class Game(
         gameLoopJob = null
         println("Game paused")
         _uiState.update { currentState ->
-            currentState.copy(showPlayButton = true)
+            currentState.copy(showPlayButton = true, isPaused = true)
         }
         setBackground()
     }
@@ -288,7 +288,8 @@ class Game(
         val activeCoins: List<Coin> = emptyList(),
         val activeObstacles: List<Obstacle> = emptyList(),
         val score: Int = 0,
-        val background: Color = Color.LightGray
+        val background: Color = Color.LightGray,
+        val isPaused: Boolean = false
     )
 
     data class Coin(

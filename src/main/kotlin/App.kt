@@ -1,12 +1,16 @@
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -27,6 +31,7 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import theme.AppTheme
+import java.awt.SystemColor.text
 
 
 @Composable
@@ -142,26 +147,49 @@ fun App(
                 )
             }
             Text(
-                text = uiState.score.toString(),
+                text = "Score: ${uiState.score}",
                 modifier = Modifier.align(Alignment.TopEnd).padding(10.dp),
                 style = MaterialTheme.typography.titleLarge
             )
 
-            AnimatedVisibility(
-                visible = uiState.showPlayButton,
-                enter = slideInVertically(),
-                exit = scaleOut(targetScale = 0f),
-                modifier = Modifier.align(Alignment.Center)
+            Column(
+                modifier = Modifier.align(Alignment.Center).fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(7.dp)
             ){
-                Button(
-                    onClick = {viewModel.startGameLoop()},
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .pointerHoverIcon(PointerIcon.Hand)
+                AnimatedVisibility(
+                    visible = uiState.showPlayButton,
+                    enter = slideInVertically(),
+                    exit = scaleOut(targetScale = 0f),
                 ){
-                    Text("PLAY", fontWeight = FontWeight.Bold)
+                    Button(
+                        onClick = {viewModel.startGameLoop()},
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .pointerHoverIcon(PointerIcon.Hand)
+                    ){
+                        Text(
+                            text = if(uiState.isPaused) "Continue" else "PLAY",
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
+                AnimatedVisibility(
+                    visible = uiState.isPaused,
+                    enter = slideInVertically(
+                        animationSpec = tween(delayMillis = 400),
+                        initialOffsetY = {it-100}
+                    )
+                ){
+                    Text(
+                        text = "Game is paused :)",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Thin
+                    )
+                }
+
             }
+
 
         }
     }
