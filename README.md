@@ -33,15 +33,15 @@ A simple endless runner game built with Kotlin and Compose for Desktop. Navigate
 ## Installation
 
 ### JAR (All Platforms)
-Download `rase-1.0.0.jar` from [releases](https://github.com/zahid4kh/rase/releases) and run:
+Download `rase-2.0.0.jar` from [releases](https://github.com/zahid4kh/rase/releases) and run:
 ```bash
-java -jar rase-1.0.0.jar
+java -jar rase-2.0.0.jar
 ```
 
 ### Linux (Debian/Ubuntu)
-Download `rase_1.0.0_all.deb` from [releases](https://github.com/zahid4kh/rase/releases) and install:
+Download `rase_2.0.0_all.deb` from [releases](https://github.com/zahid4kh/rase/releases) and install:
 ```bash
-sudo dpkg -i rase_1.0.0_all.deb
+sudo dpkg -i rase_2.0.0_all.deb
 ```
 
 ## Development
