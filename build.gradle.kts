@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.hotReload) apply false
 }
 
-val appPackageVersion = "1.0.0"
+val appPackageVersion = "2.0.0"
 group = "rase"
 version = appPackageVersion
 
